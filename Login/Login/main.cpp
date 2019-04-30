@@ -5,7 +5,6 @@
 #define EDITPW 3
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-int DisplayResourceNAMessageBox();
 
 int WINAPI WinMain(HINSTANCE hI, HINSTANCE hPrI, PSTR szCmdLine, int iCmdShow)
 {
@@ -32,7 +31,6 @@ int WINAPI WinMain(HINSTANCE hI, HINSTANCE hPrI, PSTR szCmdLine, int iCmdShow)
 	UpdateWindow(hwnd);
 
 	//-----------------------------------------------------------------------------------
-
 	MSG msg;
 
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -41,8 +39,8 @@ int WINAPI WinMain(HINSTANCE hI, HINSTANCE hPrI, PSTR szCmdLine, int iCmdShow)
 		DispatchMessage(&msg);
 	}
 	return msg.wParam;
+	//-----------------------------------------------------------------------------------
 }
-//-----------------------------------------------------------------------------------
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -65,17 +63,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hwndButtonOk = CreateWindow(L"button", L"Ok",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			100, 100, 80, 25, hwnd, (HMENU)BUTTONOK,
-			(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), NULL);
+			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
 		hwndEditUsr = CreateWindow(L"combobox", L"",
 			WS_CHILD | WS_VISIBLE,
 			100, 30, 200, 20, hwnd, (HMENU)EDITUSR,
-			(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), NULL);
+			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
-		hwndEditPw = CreateWindow(L"combobox", L"sdfsdf",
+		hwndEditPw = CreateWindow(L"combobox", L"",
 			WS_CHILD | WS_VISIBLE,
 			100, 60, 200, 20, hwnd, (HMENU)EDITPW,
-			(HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), NULL);
+			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 		return 0;
 
 	case WM_COMMAND:
@@ -88,9 +86,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				(LPCWSTR)L"Account Details",
 				MB_ICONERROR
 			);
-
-			//SetWindowText(hwndEditUsr, L"");
-			//SendMessage(hwndEditUsr, EM_SETREADONLY, TRUE, 0);
 			break;
 		case EDITUSR:
 			SendMessage(hwndEditUsr, EM_SETREADONLY, FALSE, 0);
