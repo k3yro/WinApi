@@ -5,6 +5,8 @@
 #define EDITUSER 222
 #define EDITPWRD 333
 
+#define ID_LISTBOX 101
+
 LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
 using namespace std;
@@ -28,7 +30,7 @@ int main()
 	RegisterClass(&wc);
 
 	HWND hwnd = CreateWindow(szName, L"App - Login", WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
-		500/*Todo: Berechnen*/, 400, 380, 200, NULL, NULL, hI, NULL);
+		500/*Todo: Berechnen*/, 400, 380, 500, NULL, NULL, hI, NULL);
 
 	//-----------------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	static HWND hButtonOk, hEditUser, hEditPwrd;
+	static HWND hButtonOk, hEditUser, hEditPwrd, hList;
 	char usernameBuffer[23];
 	char passwordBuffer[23];
 
@@ -62,7 +64,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_CREATE:
 		hButtonOk = CreateWindow(L"button", L"Ok",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			100, 100, 80, 25, hwnd, (HMENU)BUTTONOK,
+			100, 210, 80, 25, hwnd, (HMENU)BUTTONOK,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
 		hEditUser = CreateWindow(L"combobox", L"",
@@ -74,12 +76,29 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			WS_CHILD | WS_VISIBLE,
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
+
+		hList = CreateWindowEx(WS_EX_CLIENTEDGE, L"listbox", L"", 
+			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL | LBS_EXTENDEDSEL, 
+			100, 100, 120, 100, hwnd, (HMENU)ID_LISTBOX, 0, 0);
+
+		SendMessageA(hList, LB_ADDSTRING, 0, (LPARAM)"first");
+		SendMessageA(hList, LB_ADDSTRING, 0, (LPARAM)"second");
+		SendMessageA(hList, LB_ADDSTRING, 0, (LPARAM)"last");
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case BUTTONOK:		
+		case BUTTONOK:
+			if (SendMessage(hList, LB_GETSEL, 0/*Element*/, 0) > 0/*groesser 0 bedeutet das Element ist selected*/) {
+				cout << "First selected" << endl;
+			}
+			if (SendMessage(hList, LB_GETSEL, 1/*Element*/, 0) > 0/*groesser 0 bedeutet das Element ist selected*/) {
+				cout << "Second selected" << endl;
+			}
+			if (SendMessage(hList, LB_GETSEL, 2/*Element*/, 0) > 0/*groesser 0 bedeutet das Element ist selected*/) {
+				cout << "Last selected" << endl;
+			}
 			GetWindowTextA(hEditUser, usernameBuffer, 23);
 			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
 			cout << "Username: " << usernameBuffer << endl;
