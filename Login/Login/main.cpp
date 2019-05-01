@@ -44,8 +44,9 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	static HWND hwndButtonOk, hwndEditUsr, hwndEditPw;
-	char buffer[1024];
+	static HWND hButtonOk, hEditUser, hEditPwrd;
+	char usernameBuffer[23];
+	char passwordBuffer[23];
 
 	switch (message)
 	{
@@ -59,17 +60,17 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 		return 0;
 
 	case WM_CREATE:
-		hwndButtonOk = CreateWindow(L"button", L"Ok",
+		hButtonOk = CreateWindow(L"button", L"Ok",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			100, 100, 80, 25, hwnd, (HMENU)BUTTONOK,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
-		hwndEditUsr = CreateWindow(L"combobox", L"",
+		hEditUser = CreateWindow(L"combobox", L"",
 			WS_CHILD | WS_VISIBLE,
 			100, 30, 200, 20, hwnd, (HMENU)EDITUSER,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
-		hwndEditPw = CreateWindow(L"combobox", L"",
+		hEditPwrd = CreateWindow(L"combobox", L"",
 			WS_CHILD | WS_VISIBLE,
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
@@ -79,15 +80,17 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 		switch (LOWORD(wParam))
 		{
 		case BUTTONOK:		
-			GetWindowTextA(hwndEditUsr, buffer, 1024);
-			cout << buffer << endl;
+			GetWindowTextA(hEditUser, usernameBuffer, 23);
+			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
+			cout << "Username: " << usernameBuffer << endl;
+			cout << "Password: " << passwordBuffer << endl;
 			//MessageBoxA(NULL, "Wrong Login!\nPlease try again!", "Account Details", MB_ICONERROR);
 			break;
 		case EDITUSER:
-			SendMessage(hwndEditUsr, EM_SETREADONLY, FALSE, 0);
+			SendMessage(hEditUser, EM_SETREADONLY, FALSE, 0);
 			break;
 		case EDITPWRD:
-			SendMessage(hwndEditUsr, EM_SETREADONLY, FALSE, 0);
+			SendMessage(hEditUser, EM_SETREADONLY, FALSE, 0);
 			break;
 		}
 
