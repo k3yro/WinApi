@@ -1,9 +1,15 @@
 #include <windows.h>
 #include <iostream>
+#include <fstream>
 
 #define BUTTONOK 111
 #define EDITUSER 222
 #define EDITPWRD 333
+
+#define ID_NEW   101
+#define ID_LOAD  102
+#define ID_SAVE  103
+#define ID_CLOSE 104
 
 LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
@@ -44,9 +50,14 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
+	HMENU hMenu = CreateMenu();
+	HMENU hFileMenu = CreateMenu();
 	static HWND hButtonOk, hEditUser, hEditPwrd;
 	char usernameBuffer[23];
 	char passwordBuffer[23];
+	char filename[256];
+	filename[0] = 0;
+	OPENFILENAMEA saveDialog = {};
 
 	switch (message)
 	{
@@ -60,6 +71,15 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 		return 0;
 
 	case WM_CREATE:
+
+		AppendMenu(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, L"File");
+		AppendMenu(hFileMenu, MF_STRING, ID_NEW, L"New");
+		AppendMenu(hFileMenu, MF_STRING, ID_LOAD, L"Load");
+		AppendMenu(hFileMenu, MF_STRING, ID_SAVE, L"Save");
+		AppendMenu(hFileMenu, MF_STRING, ID_CLOSE, L"Close");
+
+		SetMenu(hwnd, hMenu);
+
 		hButtonOk = CreateWindow(L"button", L"Ok",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			100, 100, 80, 25, hwnd, (HMENU)BUTTONOK,
@@ -91,6 +111,29 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			break;
 		case EDITPWRD:
 			SendMessage(hEditUser, EM_SETREADONLY, FALSE, 0);
+			break;
+		case ID_SAVE:
+			saveDialog.lStructSize = sizeof(OPENFILENAMEA);
+			saveDialog.lpstrFilter = "Text-Dateien\0*.txt;*.text\0AlleDateien\0*.*";
+			saveDialog.nFilterIndex = 1;
+			saveDialog.lpstrFile = filename;
+			saveDialog.nMaxFile = 256;
+			saveDialog.lpstrTitle = "Select file to save";
+			saveDialog.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
+			saveDialog.nFileExtension = 1;
+			saveDialog.lpstrDefExt = ".txt";
+			if (GetSaveFileNameA(&saveDialog) != 0) {
+				GetWindowTextA(hEditUser, usernameBuffer, 23);
+				GetWindowTextA(hEditPwrd, passwordBuffer, 23);
+
+				std::ofstream outfile;
+				outfile.open(filename);
+				outfile << usernameBuffer << ":" << passwordBuffer << endl;
+				outfile.close();
+			}
+			break;
+		case ID_CLOSE:
+			PostQuitMessage(0);
 			break;
 		}
 
