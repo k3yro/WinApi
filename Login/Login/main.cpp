@@ -1,52 +1,51 @@
 #include <windows.h>
+#include <iostream>
 
-#define BUTTONOK 1
-#define EDITUSR 2
-#define EDITPW 3
+#define BUTTONOK 111
+#define EDITUSER 222
+#define EDITPWRD 333
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
-int WINAPI WinMain(HINSTANCE hI, HINSTANCE hPrI, PSTR szCmdLine, int iCmdShow)
+using namespace std;
+
+int main()
 {
-	LPCWSTR szName = L"Fensterklasse";
+	HINSTANCE hI = GetModuleHandle(0);
+	LPCWSTR szName = L"LoginWindow";
 	HBRUSH MyBrush = CreateSolidBrush(RGB(230, 230, 230));
+	MSG msg;
 	WNDCLASS wc;
 
+	wc = {};
 	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
+	wc.lpfnWndProc = MessageHandler;
 	wc.hInstance = hI;
 	wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
-	wc.hCursor = 0;
 	wc.hbrBackground = MyBrush;
-	wc.lpszMenuName = NULL;
 	wc.lpszClassName = szName;
 
 	RegisterClass(&wc);
 
-	HWND hwnd = CreateWindow(szName, L"App - Login", WS_SYSMENU | WS_MINIMIZEBOX,
+	HWND hwnd = CreateWindow(szName, L"App - Login", WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
 		500/*Todo: Berechnen*/, 400, 380, 200, NULL, NULL, hI, NULL);
-	ShowWindow(hwnd, iCmdShow);
-	UpdateWindow(hwnd);
 
 	//-----------------------------------------------------------------------------------
-	MSG msg;
 
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
-	return msg.wParam;
 	//-----------------------------------------------------------------------------------
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
 	static HWND hwndButtonOk, hwndEditUsr, hwndEditPw;
+	char buffer[1024];
 
 	switch (message)
 	{
@@ -67,30 +66,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		hwndEditUsr = CreateWindow(L"combobox", L"",
 			WS_CHILD | WS_VISIBLE,
-			100, 30, 200, 20, hwnd, (HMENU)EDITUSR,
+			100, 30, 200, 20, hwnd, (HMENU)EDITUSER,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
 		hwndEditPw = CreateWindow(L"combobox", L"",
 			WS_CHILD | WS_VISIBLE,
-			100, 60, 200, 20, hwnd, (HMENU)EDITPW,
+			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case BUTTONOK:
-			MessageBox(
-				NULL,
-				(LPCWSTR)L"Wrong Login!\nPlease try again!",
-				(LPCWSTR)L"Account Details",
-				MB_ICONERROR
-			);
+		case BUTTONOK:		
+			GetWindowTextA(hwndEditUsr, buffer, 1024);
+			cout << buffer << endl;
+			//MessageBoxA(NULL, "Wrong Login!\nPlease try again!", "Account Details", MB_ICONERROR);
 			break;
-		case EDITUSR:
+		case EDITUSER:
 			SendMessage(hwndEditUsr, EM_SETREADONLY, FALSE, 0);
 			break;
-		case EDITPW:
+		case EDITPWRD:
 			SendMessage(hwndEditUsr, EM_SETREADONLY, FALSE, 0);
 			break;
 		}
