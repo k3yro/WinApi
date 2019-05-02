@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <iostream>
+#include <commctrl.h>
 
 #define BUTTONOK 111
 #define EDITUSER 222
@@ -28,7 +29,7 @@ int main()
 	RegisterClass(&wc);
 
 	HWND hwnd = CreateWindow(szName, L"App - Login", WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
-		500/*Todo: Berechnen*/, 400, 380, 200, NULL, NULL, hI, NULL);
+		500/*Todo: Berechnen*/, 400, 380, 400, NULL, NULL, hI, NULL);
 
 	//-----------------------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	static HWND hButtonOk, hEditUser, hEditPwrd;
+	static HWND hButtonOk, hEditUser, hEditPwrd, hMonthCal, hwndDP;
 	char usernameBuffer[23];
 	char passwordBuffer[23];
 
@@ -62,7 +63,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_CREATE:
 		hButtonOk = CreateWindow(L"button", L"Ok",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			100, 100, 80, 25, hwnd, (HMENU)BUTTONOK,
+			100, 330, 80, 25, hwnd, (HMENU)BUTTONOK,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
 		hEditUser = CreateWindow(L"combobox", L"",
@@ -74,12 +75,21 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			WS_CHILD | WS_VISIBLE,
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
-		return 0;
+		
+		hMonthCal = CreateWindow(MONTHCAL_CLASSW, L"",
+			WS_BORDER | WS_CHILD | WS_VISIBLE | MCS_NOTODAYCIRCLE,
+			100, 130, 200, 200, hwnd, (HMENU)2, NULL, NULL);
 
+		hwndDP = CreateWindowEx(0, DATETIMEPICK_CLASS, TEXT("DateTime"),
+			WS_BORDER | WS_CHILD | WS_VISIBLE | DTS_SHOWNONE,
+			100, 100, 200, 25, hwnd, (HMENU)3, NULL, NULL);
+
+		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case BUTTONOK:		
+		case BUTTONOK:
+			//DTM_GETMONTHCAL
 			GetWindowTextA(hEditUser, usernameBuffer, 23);
 			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
 			cout << "Username: " << usernameBuffer << endl;
