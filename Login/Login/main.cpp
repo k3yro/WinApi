@@ -46,6 +46,8 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	HDC hdc;
 	PAINTSTRUCT ps;
 	static HWND hButtonOk, hEditUser, hEditPwrd, hMonthCal, hwndDP;
+	char date1Buffer[20];
+	SYSTEMTIME date2Stime;
 	char usernameBuffer[23];
 	char passwordBuffer[23];
 
@@ -76,20 +78,29 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 		
+		hwndDP = CreateWindowEx(0, DATETIMEPICK_CLASS, TEXT("DateTime"),
+			WS_BORDER | WS_CHILD | WS_VISIBLE | DTS_TIMEFORMAT,
+			100, 100, 200, 25, hwnd, (HMENU)3, NULL, NULL);
+
 		hMonthCal = CreateWindow(MONTHCAL_CLASSW, L"",
-			WS_BORDER | WS_CHILD | WS_VISIBLE | MCS_NOTODAYCIRCLE,
+			WS_BORDER | WS_CHILD | WS_VISIBLE | MCS_SHORTDAYSOFWEEK | MCS_WEEKNUMBERS,
 			100, 130, 200, 200, hwnd, (HMENU)2, NULL, NULL);
 
-		hwndDP = CreateWindowEx(0, DATETIMEPICK_CLASS, TEXT("DateTime"),
-			WS_BORDER | WS_CHILD | WS_VISIBLE | DTS_SHOWNONE,
-			100, 100, 200, 25, hwnd, (HMENU)3, NULL, NULL);
+		//SendMessage(hMonthCal, MCM_SETCOLOR, MCSC_TITLEBK, RGB(205, 50, 5));
+		//MonthCal_SetColor(hMonthCal, MCSC_TRAILINGTEXT, RGB(255, 250, 5));
+		
 
 		return 0;
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
 		case BUTTONOK:
-			//DTM_GETMONTHCAL
+
+			MonthCal_GetCurSel(hMonthCal, &date2Stime);
+			GetWindowTextA(hwndDP, date1Buffer, 20);
+			cout << "Date 1: " << date1Buffer << endl;
+			cout << "Date 2: " << date2Stime.wDay << "." << date2Stime.wMonth << "." << date2Stime.wYear << endl;
+
 			GetWindowTextA(hEditUser, usernameBuffer, 23);
 			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
 			cout << "Username: " << usernameBuffer << endl;
