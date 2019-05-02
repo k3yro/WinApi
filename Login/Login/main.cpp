@@ -76,7 +76,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
 		hCombobox = CreateWindowEx(WS_EX_CLIENTEDGE, L"combobox", L"",
-			WS_BORDER | WS_VISIBLE | WS_CHILD | CBS_DROPDOWN,
+			WS_BORDER | WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST,
 			100, 90, 100, 100, hwnd, (HMENU)3, 0, NULL);
 
 		SendMessageA(hCombobox, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"first");
@@ -88,7 +88,22 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case BUTTONOK:		
+		case BUTTONOK:				
+
+			switch ((SendMessage(hCombobox, CB_GETCURSEL, 0, 0)))
+			{
+			case 0:
+				cout << "First selected" << endl;
+				break;
+			case 1:
+				cout << "Second selected" << endl;
+				break;
+			case 2:
+				cout << "Last selected" << endl;
+				break;
+			default:
+				break;
+			}
 			GetWindowTextA(hEditUser, usernameBuffer, 23);
 			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
 			cout << "Username: " << usernameBuffer << endl;
