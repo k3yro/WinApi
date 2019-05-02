@@ -1,9 +1,10 @@
 #include <windows.h>
 #include <iostream>
 
-#define BUTTONOK 111
-#define EDITUSER 222
-#define EDITPWRD 333
+#define BUTTONOK 101
+#define EDITUSER 102
+#define EDITPWRD 103
+#define CBHIDEPW 104
 
 LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
@@ -28,7 +29,7 @@ int main()
 	RegisterClass(&wc);
 
 	HWND hwnd = CreateWindow(szName, L"App - Login", WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
-		500/*Todo: Berechnen*/, 400, 380, 200, NULL, NULL, hI, NULL);
+		500/*Todo: Berechnen*/, 400, 400, 200, NULL, NULL, hI, NULL);
 
 	//-----------------------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	static HWND hButtonOk, hEditUser, hEditPwrd;
+	static HWND hButtonOk, hEditUser, hEditPwrd, hCheckbox, hCombobox;
 	char usernameBuffer[23];
 	char passwordBuffer[23];
 
@@ -74,12 +75,25 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			WS_CHILD | WS_VISIBLE,
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
+
+		//hCombobox = CreateWindowEx(WS_EX_CLIENTEDGE, L"combobox", L"",
+		//	WS_BORDER | WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST,
+		//	100, 90, 100, 100, hwnd, (HMENU)3, 0, NULL);
+
+		hCheckbox = CreateWindow(L"button", L"Hide",
+			WS_CHILD | WS_VISIBLE | BS_CHECKBOX | BST_CHECKED,
+			310, 60, 60, 25, hwnd, (HMENU)CBHIDEPW,
+			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
+		SendMessage(hCheckbox, BM_SETCHECK, 1, NULL);
+		
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case BUTTONOK:		
+		case BUTTONOK:
+			cout << "Checkbox: " << SendMessage(hCheckbox, BM_GETCHECK, NULL, NULL) << endl;
+
 			GetWindowTextA(hEditUser, usernameBuffer, 23);
 			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
 			cout << "Username: " << usernameBuffer << endl;
