@@ -28,7 +28,7 @@ int main()
 	RegisterClass(&wc);
 
 	HWND hwnd = CreateWindow(szName, L"App - Login", WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE,
-		500/*Todo: Berechnen*/, 400, 380, 200, NULL, NULL, hI, NULL);
+		500/*Todo: Berechnen*/, 400, 380, 300, NULL, NULL, hI, NULL);
 
 	//-----------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	static HWND hButtonOk, hEditUser, hEditPwrd;
+	static HWND hButtonOk, hEditUser, hEditPwrd, hCombobox;
 	char usernameBuffer[23];
 	char passwordBuffer[23];
 
@@ -62,7 +62,7 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	case WM_CREATE:
 		hButtonOk = CreateWindow(L"button", L"Ok",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			100, 100, 80, 25, hwnd, (HMENU)BUTTONOK,
+			100, 120, 80, 25, hwnd, (HMENU)BUTTONOK,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
 		hEditUser = CreateWindow(L"combobox", L"",
@@ -74,6 +74,15 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			WS_CHILD | WS_VISIBLE,
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
+
+		hCombobox = CreateWindowEx(WS_EX_CLIENTEDGE, L"combobox", L"",
+			WS_BORDER | WS_VISIBLE | WS_CHILD | CBS_DROPDOWN,
+			100, 90, 100, 100, hwnd, (HMENU)3, 0, NULL);
+
+		SendMessageA(hCombobox, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"first");
+		SendMessageA(hCombobox, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"second");
+		SendMessageA(hCombobox, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"last");
+
 		return 0;
 
 	case WM_COMMAND:
