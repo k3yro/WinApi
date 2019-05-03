@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <iostream>
+#include "UsernameEncryption.h"
 
 #define BUTTONOK 101
 #define EDITUSER 102
@@ -46,8 +47,10 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 	HDC hdc;
 	PAINTSTRUCT ps;
 	static HWND hButtonOk, hEditUser, hEditPwrd, hCheckbox, hCombobox;
-	char usernameBuffer[23];
-	char passwordBuffer[23];
+	char usernameBuffer[23] = {};
+	char passwordBuffer[23] = {};
+	int encryptedUsername[23] = {};
+	UsernameEncryption usrEnc;
 
 	switch (message)
 	{
@@ -76,10 +79,6 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 			100, 60, 200, 20, hwnd, (HMENU)EDITPWRD,
 			(HINSTANCE)GetWindowLong(hwnd, -6), NULL);
 
-		//hCombobox = CreateWindowEx(WS_EX_CLIENTEDGE, L"combobox", L"",
-		//	WS_BORDER | WS_VISIBLE | WS_CHILD | CBS_DROPDOWNLIST,
-		//	100, 90, 100, 100, hwnd, (HMENU)3, 0, NULL);
-
 		hCheckbox = CreateWindow(L"button", L"Hide",
 			WS_CHILD | WS_VISIBLE | BS_CHECKBOX | BST_CHECKED,
 			310, 60, 60, 25, hwnd, (HMENU)CBHIDEPW,
@@ -96,8 +95,29 @@ LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 
 			GetWindowTextA(hEditUser, usernameBuffer, 23);
 			GetWindowTextA(hEditPwrd, passwordBuffer, 23);
+
+			for (short i = 0; i < strlen(usernameBuffer); i++)
+			{
+				usrEnc.setUsernameChar(i, usernameBuffer[i]);
+			}
+			
+			for (short i = 0; i < strlen(usernameBuffer); i++)
+			{
+				usrEnc.setUsernameChar(i, usernameBuffer[i]);
+				
+			}
+
+			usrEnc.encryption01();
+
+			for (short i = 0; i < strlen(usernameBuffer); i++)
+			{
+				encryptedUsername[i] = usrEnc.getPassword(i);
+				cout << "Pw " << i << ": " << encryptedUsername[i] << endl;
+			}			
+
 			cout << "Username: " << usernameBuffer << endl;
 			cout << "Password: " << passwordBuffer << endl;
+
 			//MessageBoxA(NULL, "Wrong Login!\nPlease try again!", "Account Details", MB_ICONERROR);
 			break;
 		case EDITUSER:
