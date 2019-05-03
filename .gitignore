@@ -12,9 +12,12 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+#[Rr]elease/
 [Rr]eleases/
-x64/
+#x64/
+*.tlog
+*.iobj
+*.ipdb
 x86/
 bld/
 [Bb]in/
