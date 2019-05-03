@@ -4,8 +4,8 @@
 class UsernameEncryption
 {
 private:
-	char _username[23];
-	int _password[23];
+	char _username[23] = {};
+	int _password[23] = {};
 
 public:
 	//UsernameEncryption();
