@@ -1,0 +1,5 @@
+WINDEF.H	- Grundlegende Datentypen
+WINNT.H		- Datentypen für Unicode
+WINBASE.H	- Funktionen des Systemkerns (KERNEL)
+WINUSER.H	- Funktionen der Benutzerschnittstelle (USER)
+WINGDI.H	- Funktionen der grafischen Geräteschnittstelle (GDI)
