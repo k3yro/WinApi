@@ -56,7 +56,7 @@ LRESULT CALLBACK WindowProzedur(HWND windowsHandle, UINT nachricht, WPARAM wPara
     RECT rect;
     switch (nachricht) {
     case WM_CREATE:
-       // PlaySound(TEXT("hellowin.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        PlaySound(TEXT("diamond.wav"), NULL, SND_ALIAS);
         return 0;
     case WM_PAINT:
         hdc = BeginPaint(windowsHandle, &ps);
