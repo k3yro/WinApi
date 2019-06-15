@@ -1,0 +1,8 @@
+CS	"class style"	- Art einer Fensterklasse
+IDI	"ID icon"	- Kennziffer für ein Icon
+IDC	"ID cursor"	- Kennziffer für eine Cursorform
+MB	"message box"	- Optionen für Meldungsfenster
+WS	"window style"	- Art eines Fensters
+CW	"create window"	- Parameter zum Erzeugen eines Fensters
+WM	"window msg"	- Nachricht an ein Fenster
+DT	"draw text"	- Art der Textausgabe 	
